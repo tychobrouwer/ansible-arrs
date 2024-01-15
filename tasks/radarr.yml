@@ -26,6 +26,9 @@
   ansible.builtin.get_url:
     url: "{{ arrs_radarr_url }}"
     dest: /root/radarr.linux-core-x64.tar.gz
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Ensure Radarr program file are in opt
   ansible.builtin.unarchive:
@@ -33,7 +36,7 @@
     dest: /opt
     group: "{{ arrs_radarr_user }}"
     owner: "{{ arrs_radarr_group }}"
-    remote_src: yes
+    remote_src: true
 
 - name: Ensure Radarr service file is on remote
   ansible.builtin.template:

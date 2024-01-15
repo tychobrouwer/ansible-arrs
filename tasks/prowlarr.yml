@@ -2,7 +2,7 @@
 - name: Ensure Prowlarr group exists
   ansible.builtin.group:
     name: "{{ arrs_prowlarr_group }}"
-    gid: "{{ prowlarruser_gid }}"
+    gid: "{{ arrs_prowlarr_gid }}"
     state: present
 
 - name: Ensure Prowlarr user is present
@@ -11,7 +11,7 @@
     group: "{{ arrs_prowlarr_group }}"
     create_home: false
     shell: /usr/sbin/nologin
-    uid: "{{ prowlarruser_uid }}"
+    uid: "{{ arrs_prowlarr_uid }}"
     state: present
 
 - name: Ensure Prowlarr lib directory exists
@@ -26,6 +26,9 @@
   ansible.builtin.get_url:
     url: "{{ arrs_prowlarr_url }}"
     dest: /root/prowlarr.linux-core-x64.tar.gz
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Ensure Prowlarr program file are in opt
   ansible.builtin.unarchive:
@@ -33,7 +36,7 @@
     dest: /opt
     owner: "{{ arrs_prowlarr_user }}"
     group: "{{ arrs_prowlarr_group }}"
-    remote_src: yes
+    remote_src: true
 
 - name: Ensure Prowlarr service file is on remote
   ansible.builtin.template:
