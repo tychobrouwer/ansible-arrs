@@ -1,0 +1,50 @@
+---
+- name: Ensure Radarr_name group exists
+  ansible.builtin.group:
+    name: "{{ arrs_radarr_group }}"
+    gid: "{{ arrs_radarr_gid }}"
+    state: present
+
+- name: Ensure Radarr user is present
+  ansible.builtin.user:
+    name: "{{ arrs_radarr_user }}"
+    group: "{{ arrs_radarr_group }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    uid: "{{ arrs_radarr_uid }}"
+    state: present
+
+- name: Ensure Radarr lib directory exists
+  ansible.builtin.file:
+    path: /var/lib/radarr
+    state: directory
+    owner: "{{ arrs_radarr_user }}"
+    group: "{{ arrs_radarr_group }}"
+    mode: "0755"
+
+- name: Ensure Radarr tar is present
+  ansible.builtin.get_url:
+    url: "{{ arrs_radarr_url }}"
+    dest: /root/radarr.linux-core-x64.tar.gz
+
+- name: Ensure Radarr program file are in opt
+  ansible.builtin.unarchive:
+    src: /root/radarr.linux-core-x64.tar.gz
+    dest: /opt
+    group: "{{ arrs_radarr_user }}"
+    owner: "{{ arrs_radarr_group }}"
+    remote_src: yes
+
+- name: Ensure Radarr service file is on remote
+  ansible.builtin.template:
+    src: radarr.service.j2
+    dest: /etc/systemd/system/radarr.service
+    mode: "0664"
+    owner: root
+    group: root
+
+- name: Ensure Radarr service is enabled and started
+  ansible.builtin.service:
+    name: radarr
+    state: started
+    enabled: true

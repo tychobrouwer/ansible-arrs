@@ -1,0 +1,20 @@
+---
+# vars file for ansible-arrs
+arrs_media_user: media
+
+
+arrs_prowlarr_url: http://prowlarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64
+arrs_prowlarr_user: prowlarr
+arrs_prowlarr_group: prowlarr
+arrs_prowlarr_uid: 1001
+arrs_prowlarr_gid: 1001
+
+arrs_radarr_url: http://radarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64
+arrs_radarr_user: sonarr
+arrs_sonarr_group: sonarr
+arrs_radarr_uid: 1002
+arrs_radarr_gid: 1002
+
+
+sonarr_ip_api: https://networkcalc.com/api/dns/lookup/skyhook.sonarr.tv
+sonarr_apt_ip_api: https://networkcalc.com/api/dns/lookup/apt.sonarr.tv

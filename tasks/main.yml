@@ -1,0 +1,17 @@
+---
+# tasks file for ansible-arrs
+- name: Install required packages
+  ansible.builtin.package:
+    name:
+      - curl
+      - sqlite3
+    state: present
+
+- name: Install Radarr
+  ansible.builtin.include_tasks: radarr.yml
+
+- name: Install Prowlarr
+  ansible.builtin.include_tasks: prowlarr.yml
+
+- name: Install Sonarr
+  ansible.builtin.include_tasks: sonarr.yml

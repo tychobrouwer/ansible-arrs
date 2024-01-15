@@ -1,0 +1,17 @@
+---
+- name: Ensure apt-key Sonarr is installed
+  ansible.builtin.apt_key:
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: 2009837CBFFD68F45BC180471F4F90DE2A9B4BF8
+    keyring: /usr/share/keyrings/sonarr.gpg
+
+- name: Ensure Sonarr repository is in sources list
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/sonarr.gpg] https://apt.sonarr.tv/debian buster main
+    state: present
+
+- name: Ensure Sonarr is installed
+  ansible.builtin.package:
+    name: sonarr
+    update_cache: true
+    state: present
