@@ -9,7 +9,15 @@ arrs_prowlarr_uid: 1001
 arrs_prowlarr_gid: 1001
 
 arrs_radarr_url: http://radarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64
-arrs_radarr_user: sonarr
-arrs_sonarr_group: sonarr
+arrs_radarr_user: radarr
+arrs_radarr_group: radarr
 arrs_radarr_uid: 1002
 arrs_radarr_gid: 1002
+
+arrs_sonarr_url: https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux
+arrs_sonarr_user: sonarr
+arrs_sonarr_group: sonarr
+arrs_sonarr_uid: 1003
+arrs_sonarr_gid: 1003
+
+arrs_media_owner: media

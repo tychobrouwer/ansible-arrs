@@ -10,6 +10,7 @@
     name: "{{ arrs_radarr_user }}"
     group: "{{ arrs_radarr_group }}"
     create_home: false
+    system: true
     shell: /usr/sbin/nologin
     uid: "{{ arrs_radarr_uid }}"
     state: present
@@ -37,6 +38,7 @@
     group: "{{ arrs_radarr_user }}"
     owner: "{{ arrs_radarr_group }}"
     remote_src: true
+  notify: Restart Radarr
 
 - name: Ensure Radarr service file is on remote
   ansible.builtin.template:

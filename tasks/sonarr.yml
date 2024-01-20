@@ -1,17 +1,55 @@
 ---
-- name: Ensure apt-key Sonarr is installed
-  ansible.builtin.apt_key:
-    keyserver: hkp://keyserver.ubuntu.com:80
-    id: 2009837CBFFD68F45BC180471F4F90DE2A9B4BF8
-    keyring: /usr/share/keyrings/sonarr.gpg
-
-- name: Ensure Sonarr repository is in sources list
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/usr/share/keyrings/sonarr.gpg] https://apt.sonarr.tv/debian buster main
+- name: Ensure Sonarr group exists
+  ansible.builtin.group:
+    name: "{{ arrs_sonarr_group }}"
+    gid: "{{ arrs_sonarr_gid }}"
     state: present
 
-- name: Ensure Sonarr is installed
-  ansible.builtin.package:
+- name: Ensure Sonarr user is present
+  ansible.builtin.user:
+    name: "{{ arrs_sonarr_user }}"
+    group: "{{ arrs_sonarr_group }}"
+    create_home: false
+    system: true
+    shell: /usr/sbin/nologin
+    uid: "{{ arrs_sonarr_uid }}"
+    state: present
+
+- name: Ensure Sonarr lib directory exists
+  ansible.builtin.file:
+    path: /var/lib/sonarr
+    state: directory
+    owner: "{{ arrs_sonarr_user }}"
+    group: "{{ arrs_sonarr_group }}"
+    mode: "0755"
+
+- name: Ensure Sonarr tar is present
+  ansible.builtin.get_url:
+    url: "{{ arrs_sonarr_url }}"
+    dest: /root/sonarr.linux-core-x64.tar.gz
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Sonarr program file are in opt
+  ansible.builtin.unarchive:
+    src: /root/sonarr.linux-core-x64.tar.gz
+    dest: /opt
+    group: "{{ arrs_sonarr_user }}"
+    owner: "{{ arrs_sonarr_group }}"
+    remote_src: true
+  notify: Restart Sonarr
+
+- name: Ensure Sonarr service file is on remote
+  ansible.builtin.template:
+    src: sonarr.service.j2
+    dest: /etc/systemd/system/sonarr.service
+    mode: "0664"
+    owner: root
+    group: root
+
+- name: Ensure Sonarr service is enabled and started
+  ansible.builtin.service:
     name: sonarr
-    update_cache: true
-    state: present
+    state: started
+    enabled: true

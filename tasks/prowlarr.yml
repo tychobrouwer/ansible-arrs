@@ -10,6 +10,7 @@
     name: "{{ arrs_prowlarr_user }}"
     group: "{{ arrs_prowlarr_group }}"
     create_home: false
+    system: true
     shell: /usr/sbin/nologin
     uid: "{{ arrs_prowlarr_uid }}"
     state: present
@@ -37,6 +38,7 @@
     owner: "{{ arrs_prowlarr_user }}"
     group: "{{ arrs_prowlarr_group }}"
     remote_src: true
+  notify: Restart Prowlarr
 
 - name: Ensure Prowlarr service file is on remote
   ansible.builtin.template:
