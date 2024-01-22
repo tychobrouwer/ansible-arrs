@@ -10,7 +10,6 @@
     name: "{{ arrs_sonarr_user }}"
     group: "{{ arrs_sonarr_group }}"
     create_home: false
-    system: true
     shell: /usr/sbin/nologin
     uid: "{{ arrs_sonarr_uid }}"
     state: present
