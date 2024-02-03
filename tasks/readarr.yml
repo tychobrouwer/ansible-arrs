@@ -1,0 +1,54 @@
+---
+- name: Ensure Readarr group exists
+  ansible.builtin.group:
+    name: "{{ arrs_readarr_group }}"
+    gid: "{{ arrs_readarr_gid }}"
+    state: present
+
+- name: Ensure Readarr user is present
+  ansible.builtin.user:
+    name: "{{ arrs_readarr_user }}"
+    group: "{{ arrs_readarr_group }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    uid: "{{ arrs_readarr_uid }}"
+    state: present
+
+- name: Ensure Readarr lib directory exists
+  ansible.builtin.file:
+    path: /var/lib/readarr
+    state: directory
+    owner: "{{ arrs_readarr_user }}"
+    group: "{{ arrs_readarr_group }}"
+    mode: "0755"
+
+- name: Ensure Readarr tar is present
+  ansible.builtin.get_url:
+    url: "{{ arrs_readarr_url }}"
+    dest: /root/readarr.linux-core-x64.tar.gz
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Readarr program file are in opt
+  ansible.builtin.unarchive:
+    src: /root/readarr.linux-core-x64.tar.gz
+    dest: /opt
+    group: "{{ arrs_readarr_user }}"
+    owner: "{{ arrs_readarr_group }}"
+    remote_src: true
+  notify: Restart Readarr
+
+- name: Ensure Readarr service file is on remote
+  ansible.builtin.template:
+    src: readarr.service.j2
+    dest: /etc/systemd/system/readarr.service
+    mode: "0664"
+    owner: root
+    group: root
+
+- name: Ensure Readarr service is enabled and started
+  ansible.builtin.service:
+    name: readarr
+    state: started
+    enabled: true

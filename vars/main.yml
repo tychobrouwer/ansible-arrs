@@ -20,4 +20,10 @@ arrs_sonarr_group: sonarr
 arrs_sonarr_uid: 1003
 arrs_sonarr_gid: 1003
 
+arrs_readarr_url: http://readarr.servarr.com/v1/update/develop/updatefile?os=linux&runtime=netcore&arch=x64
+arrs_readarr_user: readarr
+arrs_readarr_group: readarr
+arrs_readarr_uid: 1004
+arrs_readarr_gid: 1005
+
 arrs_media_owner: media

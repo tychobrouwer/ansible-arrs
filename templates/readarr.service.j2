@@ -1,13 +1,13 @@
 [Unit]
-Description=Sonarr Daemon
+Description=Readarr Daemon
 After=syslog.target network.target
 
 [Service]
-User={{ arrs_sonarr_user }}
+User={{ arrs_readarr_user }}
 Group={{ arrs_media_owner }}
 UMask=0002
 Type=simple
-ExecStart=/opt/Sonarr/Sonarr -nobrowser -data=/var/lib/sonarr/
+ExecStart=/opt/Readarr/Readarr -nobrowser -data=/var/lib/readarr/
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
