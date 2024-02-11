@@ -15,3 +15,6 @@
 
 - name: Install Sonarr
   ansible.builtin.include_tasks: sonarr.yml
+
+- name: Install Readarr
+  ansible.builtin.include_tasks: sonarr.yml
