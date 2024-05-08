@@ -19,3 +19,8 @@
   ansible.builtin.service:
     name: readarr
     state: restarted
+
+- name: Restart Bazarr
+  ansible.builtin.service:
+    name: bazarr
+    state: restarted
