@@ -24,6 +24,12 @@ arrs_readarr_url: http://readarr.servarr.com/v1/update/develop/updatefile?os=lin
 arrs_readarr_user: readarr
 arrs_readarr_group: readarr
 arrs_readarr_uid: 1004
-arrs_readarr_gid: 1005
+arrs_readarr_gid: 1004
+
+arrs_bazarr_url: https://github.com/morpheus65535/bazarr/releases/latest/download/bazarr.zip
+arrs_bazarr_user: bazarr
+arrs_bazarr_group: bazarr
+arrs_bazarr_uid: 1005
+arrs_bazarr_gid: 1005
 
 arrs_media_owner: media

@@ -1,0 +1,70 @@
+---
+- name: Install required packages
+  ansible.builtin.package:
+    name: 
+      - 7zip
+      - python3-dev
+      - python3-pip
+      - python3-distutils
+      - unrar
+      - unzip
+    state: present
+
+- name: Ensure Bazarr group exists
+  ansible.builtin.group:
+    name: "{{ arrs_bazarr_group }}"
+    gid: "{{ arrs_bazarr_gid }}"
+    state: present
+
+- name: Ensure Bazarr user is present
+  ansible.builtin.user:
+    name: "{{ arrs_bazarr_user }}"
+    group: "{{ arrs_bazarr_group }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    uid: "{{ arrs_bazarr_uid }}"
+    state: present
+
+- name: Ensure Bazarr lib directory exists
+  ansible.builtin.file:
+    path: /var/lib/bazarr
+    state: directory
+    owner: "{{ arrs_bazarr_user }}"
+    group: "{{ arrs_bazarr_group }}"
+    mode: "0755"
+
+- name: Ensure Bazarr tar is present
+  ansible.builtin.get_url:
+    url: "{{ arrs_bazarr_url }}"
+    dest: /root/bazarr.zip
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Bazarr program file are in opt
+  ansible.builtin.unarchive:
+    src: /root/bazarr.zip
+    dest: /opt
+    owner: "{{ arrs_bazarr_user }}"
+    group: "{{ arrs_bazarr_group }}"
+    remote_src: true
+  notify: Restart Bazarr
+
+- name: Install bazarr python requirements
+  ansible.builtin.command:
+    cmd: /usr/bin/python3 -m pip install -r /opt/bazarr/requirements.txt
+  changed_when: false
+
+- name: Ensure Bazarr service file is on remote
+  ansible.builtin.template:
+    src: bazarr.service.j2
+    dest: /etc/systemd/system/bazarr.service
+    mode: "0664"
+    owner: root
+    group: root
+
+- name: Ensure Bazarr service is enabled and started
+  ansible.builtin.service:
+    name: bazarr
+    state: started
+    enabled: true
