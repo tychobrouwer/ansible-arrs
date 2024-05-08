@@ -41,6 +41,14 @@
     group: root
     mode: "0644"
 
+- name: Ensure Bazarr directory exists
+  ansible.builtin.file:
+    path: /opt/Bazarr
+    state: directory
+    owner: "{{ arrs_bazarr_user }}"
+    group: "{{ arrs_bazarr_group }}"
+    mode: "0755"
+
 - name: Ensure Bazarr program file are in opt
   ansible.builtin.unarchive:
     src: /root/bazarr.zip
