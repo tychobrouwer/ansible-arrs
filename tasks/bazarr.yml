@@ -44,7 +44,7 @@
 - name: Ensure Bazarr program file are in opt
   ansible.builtin.unarchive:
     src: /root/bazarr.zip
-    dest: /opt
+    dest: /opt/Bazarr
     owner: "{{ arrs_bazarr_user }}"
     group: "{{ arrs_bazarr_group }}"
     remote_src: true
@@ -56,7 +56,7 @@
 
 - name: Install bazarr python requirements
   ansible.builtin.command:
-    cmd: /usr/bin/python3 -m pip install -r /opt/bazarr/requirements.txt
+    cmd: /usr/bin/python3 -m pip install -r /opt/Bazarr/requirements.txt
   changed_when: false
 
 - name: Ensure Bazarr service file is on remote
