@@ -50,6 +50,10 @@
     remote_src: true
   notify: Restart Bazarr
 
+- name: Set pip configuration
+  ansible.builtin.command: pip3 config set global.break-system-packages True
+  changed_when: false
+
 - name: Install bazarr python requirements
   ansible.builtin.command:
     cmd: /usr/bin/python3 -m pip install -r /opt/bazarr/requirements.txt
