@@ -34,8 +34,8 @@
   ansible.builtin.unarchive:
     src: /root/readarr.linux-core-x64.tar.gz
     dest: /opt
-    group: "{{ arrs_readarr_user }}"
-    owner: "{{ arrs_readarr_group }}"
+    owner: "{{ arrs_readarr_user }}"
+    group: "{{ arrs_readarr_group }}"
     remote_src: true
   notify: Restart Readarr
 

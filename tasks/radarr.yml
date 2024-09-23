@@ -34,8 +34,8 @@
   ansible.builtin.unarchive:
     src: /root/radarr.linux-core-x64.tar.gz
     dest: /opt
-    group: "{{ arrs_radarr_user }}"
-    owner: "{{ arrs_radarr_group }}"
+    owner: "{{ arrs_radarr_user }}"
+    group: "{{ arrs_radarr_group }}"
     remote_src: true
   notify: Restart Radarr
 

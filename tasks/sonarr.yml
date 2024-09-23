@@ -34,8 +34,8 @@
   ansible.builtin.unarchive:
     src: /root/sonarr.linux-core-x64.tar.gz
     dest: /opt
-    group: "{{ arrs_sonarr_user }}"
-    owner: "{{ arrs_sonarr_group }}"
+    owner: "{{ arrs_sonarr_user }}"
+    group: "{{ arrs_sonarr_group }}"
     remote_src: true
   notify: Restart Sonarr
 
