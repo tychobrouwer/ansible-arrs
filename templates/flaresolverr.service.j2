@@ -6,7 +6,7 @@ After=syslog.target network.target
 User={{ arrs_flaresolverr_user }}
 Group={{ arrs_flaresolverr_group }}
 Type=simple
-ExecStart=/opt/Flaresolverr/Flaresolverr -nobrowser -data=/var/lib/flaresolverr/
+ExecStart=/opt/flaresolverr/flaresolverr -nobrowser -data=/var/lib/flaresolverr/
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
