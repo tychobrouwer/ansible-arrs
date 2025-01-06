@@ -24,3 +24,8 @@
   ansible.builtin.service:
     name: bazarr
     state: restarted
+
+- name: Restart FlareSolverr
+  ansible.builtin.service:
+    name: flaresolverr
+    state: restarted
