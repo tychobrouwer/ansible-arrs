@@ -1,0 +1,54 @@
+---
+- name: Ensure Flaresolverr group exists
+  ansible.builtin.group:
+    name: "{{ arrs_flaresolverr_group }}"
+    gid: "{{ arrs_flaresolverr_gid }}"
+    state: present
+
+- name: Ensure Flaresolverr user is present
+  ansible.builtin.user:
+    name: "{{ arrs_flaresolverr_user }}"
+    group: "{{ arrs_flaresolverr_group }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    uid: "{{ arrs_flaresolverr_uid }}"
+    state: present
+
+- name: Ensure Flaresolverr lib directory exists
+  ansible.builtin.file:
+    path: /var/lib/flaresolverr
+    state: directory
+    owner: "{{ arrs_flaresolverr_user }}"
+    group: "{{ arrs_flaresolverr_group }}"
+    mode: "0755"
+
+- name: Ensure Flaresolverr tar is present
+  ansible.builtin.get_url:
+    url: "{{ arrs_flaresolverr_url }}"
+    dest: /root/flaresolverr_linux_x64.tar.gz
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Flaresolverr program file are in opt
+  ansible.builtin.unarchive:
+    src: /root/flaresolverr_linux_x64.tar.gz
+    dest: /opt
+    owner: "{{ arrs_flaresolverr_user }}"
+    group: "{{ arrs_flaresolverr_group }}"
+    remote_src: true
+  notify: Restart Flaresolverr
+
+- name: Ensure Flaresolverr service file is on remote
+  ansible.builtin.template:
+    src: flaresolverr.service.j2
+    dest: /etc/systemd/system/flaresolverr.service
+    mode: "0664"
+    owner: root
+    group: root
+
+- name: Ensure Flaresolverr service is enabled and started
+  ansible.builtin.service:
+    name: flaresolverr
+    state: started
+    enabled: true

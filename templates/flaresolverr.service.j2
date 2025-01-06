@@ -1,0 +1,15 @@
+[Unit]
+Description=Flaresolverr Daemon
+After=syslog.target network.target
+
+[Service]
+User={{ arrs_flaresolverr_user }}
+Group={{ arrs_flaresolverr_group }}
+Type=simple
+ExecStart=/opt/Flaresolverr/Flaresolverr -nobrowser -data=/var/lib/flaresolverr/
+TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

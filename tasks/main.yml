@@ -21,3 +21,6 @@
 
 - name: Install Bazarr
   ansible.builtin.include_tasks: bazarr.yml
+
+- name: Install FlareSolverr
+  ansible.builtin.include_tasks: flaresolverr.yml
