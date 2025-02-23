@@ -12,9 +12,12 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: servers
-      roles:
-         - { role: tychobrouwer.arrs, arrs_media_owner: media }
+- hosts: servers
+  roles:
+    - role: tychobrouwer.arrs
+
+    - role: tychobrouwer.arrs
+      arrs_media_owner: media
 ```
 
 License
