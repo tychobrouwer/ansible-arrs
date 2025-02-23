@@ -7,20 +7,12 @@
       - sqlite3
     state: present
 
-- name: Install Radarr
-  ansible.builtin.include_tasks: radarr.yml
-
-- name: Install Prowlarr
-  ansible.builtin.include_tasks: prowlarr.yml
-
-- name: Install Sonarr
-  ansible.builtin.include_tasks: sonarr.yml
-
-- name: Install Readarr
-  ansible.builtin.include_tasks: readarr.yml
-
-- name: Install Bazarr
-  ansible.builtin.include_tasks: bazarr.yml
-
-- name: Install FlareSolverr
-  ansible.builtin.include_tasks: flaresolverr.yml
+- name: Install ARR applications
+  ansible.builtin.include_tasks: "{{ item }}"
+  loop:
+    - radarr.yml
+    - prowlarr.yml
+    - sonarr.yml
+    - readarr.yml
+    - bazarr.yml
+    - flaresolverr.yml

@@ -6,7 +6,7 @@
 
 - name: Install required packages
   ansible.builtin.package:
-    name: 
+    name:
       - 7zip
       - python3-dev
       - python3-pip
@@ -21,7 +21,7 @@
     gid: "{{ arrs_bazarr_gid }}"
     state: present
 
-- name: Ensure Bazarr user is present
+- name: Ensure Bazarr user exists
   ansible.builtin.user:
     name: "{{ arrs_bazarr_user }}"
     group: "{{ arrs_bazarr_group }}"
@@ -30,7 +30,7 @@
     uid: "{{ arrs_bazarr_uid }}"
     state: present
 
-- name: Ensure Bazarr lib directory exists
+- name: Ensure Bazarr library directory exists
   ansible.builtin.file:
     path: /var/lib/bazarr
     state: directory
@@ -38,7 +38,7 @@
     group: "{{ arrs_bazarr_group }}"
     mode: "0755"
 
-- name: Ensure Bazarr tar is present
+- name: Download Bazarr archive
   ansible.builtin.get_url:
     url: "{{ arrs_bazarr_url }}"
     dest: /root/bazarr.zip
@@ -46,7 +46,7 @@
     group: root
     mode: "0644"
 
-- name: Ensure Bazarr directory exists
+- name: Ensure Bazarr installation directory exists
   ansible.builtin.file:
     path: /opt/Bazarr
     state: directory
@@ -54,7 +54,7 @@
     group: "{{ arrs_bazarr_group }}"
     mode: "0755"
 
-- name: Ensure Bazarr program file are in opt
+- name: Extract Bazarr to /opt/Bazarr
   ansible.builtin.unarchive:
     src: /root/bazarr.zip
     dest: /opt/Bazarr
@@ -63,25 +63,22 @@
     remote_src: true
   notify: Restart Bazarr
 
-- name: Set pip configuration
-  ansible.builtin.command: pip3 config set global.break-system-packages True
-  changed_when: false
+- name: Install Bazarr Python dependencies
+  ansible.builtin.pip:
+    requirements: /opt/Bazarr/requirements.txt
+    extra_args: --break-package-system
 
-- name: Install bazarr python requirements
-  ansible.builtin.command:
-    cmd: /usr/bin/python3 -m pip install -r /opt/Bazarr/requirements.txt
-  changed_when: false
-
-- name: Ensure Bazarr service file is on remote
+- name: Deploy Bazarr systemd service
   ansible.builtin.template:
     src: bazarr.service.j2
     dest: /etc/systemd/system/bazarr.service
     mode: "0664"
     owner: root
     group: root
+  notify: Restart Bazarr
 
 - name: Ensure Bazarr service is enabled and started
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: bazarr
     state: started
     enabled: true

@@ -5,7 +5,7 @@
     gid: "{{ arrs_sonarr_gid }}"
     state: present
 
-- name: Ensure Sonarr user is present
+- name: Ensure Sonarr user exists
   ansible.builtin.user:
     name: "{{ arrs_sonarr_user }}"
     group: "{{ arrs_sonarr_group }}"
@@ -14,7 +14,7 @@
     uid: "{{ arrs_sonarr_uid }}"
     state: present
 
-- name: Ensure Sonarr lib directory exists
+- name: Ensure Sonarr library directory exists
   ansible.builtin.file:
     path: /var/lib/sonarr
     state: directory
@@ -22,7 +22,7 @@
     group: "{{ arrs_sonarr_group }}"
     mode: "0755"
 
-- name: Ensure Sonarr tar is present
+- name: Download Sonarr archive
   ansible.builtin.get_url:
     url: "{{ arrs_sonarr_url }}"
     dest: /root/sonarr.linux-core-x64.tar.gz
@@ -30,7 +30,16 @@
     group: root
     mode: "0644"
 
-- name: Ensure Sonarr program file are in opt
+- name: Ensure Sonarr installation directory exists
+  ansible.builtin.file:
+    path: /opt/Sonarr
+    state: directory
+    owner: "{{ arrs_sonarr_user }}"
+    group: "{{ arrs_sonarr_group }}"
+    mode: "0755"
+  become: true
+
+- name: Extract Sonarr to /opt/Sonarr
   ansible.builtin.unarchive:
     src: /root/sonarr.linux-core-x64.tar.gz
     dest: /opt
@@ -39,16 +48,17 @@
     remote_src: true
   notify: Restart Sonarr
 
-- name: Ensure Sonarr service file is on remote
+- name: Deploy Sonarr systemd service
   ansible.builtin.template:
     src: sonarr.service.j2
     dest: /etc/systemd/system/sonarr.service
     mode: "0664"
     owner: root
     group: root
+  notify: Restart Sonarr
 
-- name: Ensure Sonarr service is enabled and started
-  ansible.builtin.service:
+- name: Enable and start Sonarr service
+  ansible.builtin.systemd:
     name: sonarr
     state: started
     enabled: true

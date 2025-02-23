@@ -5,7 +5,7 @@
     gid: "{{ arrs_radarr_gid }}"
     state: present
 
-- name: Ensure Radarr user is present
+- name: Ensure Radarr user exists
   ansible.builtin.user:
     name: "{{ arrs_radarr_user }}"
     group: "{{ arrs_radarr_group }}"
@@ -14,7 +14,7 @@
     uid: "{{ arrs_radarr_uid }}"
     state: present
 
-- name: Ensure Radarr lib directory exists
+- name: Ensure Radarr library directory exists
   ansible.builtin.file:
     path: /var/lib/radarr
     state: directory
@@ -22,7 +22,7 @@
     group: "{{ arrs_radarr_group }}"
     mode: "0755"
 
-- name: Ensure Radarr tar is present
+- name: Download Radarr archive
   ansible.builtin.get_url:
     url: "{{ arrs_radarr_url }}"
     dest: /root/radarr.linux-core-x64.tar.gz
@@ -30,7 +30,15 @@
     group: root
     mode: "0644"
 
-- name: Ensure Radarr program file are in opt
+- name: Ensure Radarr installation directory exists
+  ansible.builtin.file:
+    path: /opt/Radarr
+    state: directory
+    owner: "{{ arrs_radarr_user }}"
+    group: "{{ arrs_radarr_group }}"
+    mode: "0755"
+
+- name: Extract Radarr to /opt/Radarr
   ansible.builtin.unarchive:
     src: /root/radarr.linux-core-x64.tar.gz
     dest: /opt
@@ -39,16 +47,17 @@
     remote_src: true
   notify: Restart Radarr
 
-- name: Ensure Radarr service file is on remote
+- name: Deploy Radarr systemd service
   ansible.builtin.template:
     src: radarr.service.j2
     dest: /etc/systemd/system/radarr.service
     mode: "0664"
     owner: root
     group: root
+  notify: Restart Radarr
 
-- name: Ensure Radarr service is enabled and started
-  ansible.builtin.service:
+- name: Enable and start Radarr service
+  ansible.builtin.systemd:
     name: radarr
     state: started
     enabled: true

@@ -1,31 +1,37 @@
 ---
 # handlers file for ansible-arrs
 - name: Restart Prowlarr
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: prowlarr
     state: restarted
+    daemon_reload: true
 
 - name: Restart Radarr
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: radarr
     state: restarted
+    daemon_reload: true
 
 - name: Restart Sonarr
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: sonarr
     state: restarted
+    daemon_reload: true
 
 - name: Restart Readarr
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: readarr
     state: restarted
+    daemon_reload: true
 
 - name: Restart Bazarr
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: bazarr
     state: restarted
+    daemon_reload: true
 
 - name: Restart FlareSolverr
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: flaresolverr
     state: restarted
+    daemon_reload: true
