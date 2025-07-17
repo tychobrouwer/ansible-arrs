@@ -1,0 +1,76 @@
+---
+- name: Ensure Jellyseerr group exists
+  ansible.builtin.group:
+    name: "{{ arrs_jellyseerr_group }}"
+    gid: "{{ arrs_jellyseerr_gid }}"
+    state: present
+
+- name: Ensure Jellyseerr user exists
+  ansible.builtin.user:
+    name: "{{ arrs_jellyseerr_user }}"
+    group: "{{ arrs_jellyseerr_group }}"
+    create_home: false
+    shell: /usr/sbin/nologin
+    uid: "{{ arrs_jellyseerr_uid }}"
+    state: present
+
+- name: Ensure Jellyseerr installation directory exists
+  ansible.builtin.file:
+    path: /opt/jellyseerr/jellyseerr
+    state: directory
+    owner: "{{ arrs_jellyseerr_user }}"
+    group: "{{ arrs_jellyseerr_group }}"
+    mode: "0755"
+
+- name: Clone Jellyseerr repository
+  ansible.builtin.git:
+    repo: "{{ arrs_jellyseerr_repo }}"
+    dest: /opt/jellyseerr/jellyseerr
+    version: "{{ arrs_jellyseerr_version }}"
+    clone: true
+    depth: 1
+    force: true
+    owner: "{{ arrs_jellyseerr_user }}"
+    group: "{{ arrs_jellyseerr_group }}"
+
+- name: Install Jellyseerr dependencies
+  ansible.builtin.command:
+    cmd: CYPRESS_INSTALL_BINARY=0 pnpm install --frozen-lockfile
+    chdir: /opt/jellyseerr/jellyseerr
+  become: true
+  become_user: "{{ arrs_jellyseerr_user }}"
+  register: jellyseerr_install_deps
+  changed_when: jellyseerr_install_deps.stdout != ""
+
+- name: Build Jellyseerr
+  ansible.builtin.command:
+    cmd: pnpm build
+    chdir: /opt/jellyseerr/jellyseerr
+  become: true
+  become_user: "{{ arrs_jellyseerr_user }}"
+  register: jellyseerr_build
+  changed_when: jellyseerr_build.stdout != ""
+
+- name: Ensure Jellyseerr configuration file exists
+  ansible.builtin.copy:
+    content: |
+      PORT={{ arrs_jellyseerr_port }}
+    dest: /etc/jellyseerr/jellyseerr.conf
+    mode: "0644"
+  owner: "{{ arrs_jellyseerr_user }}"
+  group: "{{ arrs_jellyseerr_group }}"
+
+- name: Ensure Jellyseerr service file exists
+  ansible.builtin.template:
+    src: jellyseerr.service.j2
+    dest: /etc/systemd/system/jellyseerr.service
+    mode: "0644"
+  notify: Reload systemd
+  owner: root
+  group: root
+
+- name: Ensure Jellyseerr service is enabled and started
+  ansible.builtin.systemd:
+    name: jellyseerr
+    state: started
+    enabled: true

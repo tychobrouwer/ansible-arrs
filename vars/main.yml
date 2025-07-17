@@ -38,4 +38,10 @@ arrs_flaresolverr_group: flaresolverr
 arrs_flaresolverr_uid: 1006
 arrs_flaresolverr_gid: 1006
 
+arrs_jellyseerr_user: jellyseerr
+arrs_jellyseerr_group: jellyseerr
+arrs_jellyseerr_port: 5055
+arrs_flaresolverr_uid: 1007
+arrs_flaresolverr_gid: 1007
+
 arrs_media_owner: media
